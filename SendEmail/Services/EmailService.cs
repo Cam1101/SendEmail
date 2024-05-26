@@ -3,6 +3,7 @@ using MailKit.Security;
 using MimeKit.Text;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Text;
 
 namespace SendEmail.Services
 {
@@ -19,10 +20,27 @@ namespace SendEmail.Services
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("Email:UserName").Value));
             email.To.Add(MailboxAddress.Parse(request.Para));
-            email.Subject = request.Asunto;
+            email.Subject = "Detalles de compra en MiPortal";
+
+            //Cuerpo del correo:
+            var bodyBuilder = new StringBuilder();
+            bodyBuilder.AppendLine("<h1>Detalles de su compra:</h1>");
+            bodyBuilder.AppendLine($"<p><strong>Dirección de envio: </strong> {request.DireccionEnvio}</p>");
+            bodyBuilder.AppendLine("<h2>Productos:</h2>");
+            bodyBuilder.AppendLine("<ul>");
+
+            foreach (var producto in request.Productos)
+            {
+                bodyBuilder.AppendLine($"<li>{producto.Nombre} - Cantidad: {producto.Cantidad}" +
+                    $", Precio: {producto.Precio:C}</li>");
+            }
+            bodyBuilder.AppendLine("</ul>");
+            bodyBuilder.AppendLine($"<p><strong>Total del pago: </strong> {request.TotalPago:C}</p>");
+            bodyBuilder.AppendLine($"<p><strong>Fecha del pedido: </strong> {request.FechaPedido:dd/MM/yyyy}</p>");
+
             email.Body = new TextPart(TextFormat.Html)
             {
-                Text = request.Contenido
+                Text = bodyBuilder.ToString()
             };
 
 
