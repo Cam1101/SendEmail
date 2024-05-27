@@ -20,7 +20,7 @@ namespace SendEmail.Controllers
         [HttpPost]
         public IActionResult SendEmail (EmailDTO request)
         {
-            _emailService.SenqEmail(request);
+            _emailService.SendEmail(request);
             return Ok();
         }
     }
