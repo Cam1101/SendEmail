@@ -15,7 +15,7 @@ namespace SendEmail.Services
             _config = config;
         }
 
-        public void SenqEmail(EmailDTO request)
+        public void SendEmail(EmailDTO request)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_config.GetSection("Email:UserName").Value));
